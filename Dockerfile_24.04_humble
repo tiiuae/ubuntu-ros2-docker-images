@@ -1,0 +1,46 @@
+FROM ubuntu:24.04 AS common
+
+RUN apt update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt install -y --no-install-recommends \
+			locales \
+			gnutls-bin \
+			curl \
+			software-properties-common \
+			pkg-config \
+			build-essential \
+			gcc \
+			cmake
+
+RUN locale-gen en_US en_US.UTF-8 && \
+		update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 && \
+		curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \
+		echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" > /etc/apt/sources.list.d/ros2.list && \
+		apt update && apt upgrade -y && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt install -y \
+		python3-flake8-docstrings \
+		python3-pip \
+		python3-pytest-cov \
+		ros-dev-tools \
+		python3-flake8-blind-except \
+		python3-flake8-builtins \
+		python3-flake8-class-newline \
+		python3-flake8-comprehensions \
+		python3-flake8-deprecated \
+		python3-flake8-import-order \
+		python3-flake8-quotes \
+		python3-pytest-repeat \
+		python3-pytest-rerunfailures
+
+WORKDIR /app/ros2_ws
+RUN mkdir -p /app/ros2_ws/src
+
+COPY base-image-resources/* .
+RUN vcs import src < fastrtps.repos
+RUN vcs import src < ros2_humble.repos
+
+RUN patch -p1 -d src/ros2/rmw_fastrtps/rmw_fastrtps_shared_cpp/ < 0001-Add-PKCS-11-changes-to-Humble-branch-12.patch
+RUN patch -p1 src/ros2/rmw_implementation/rmw_implementation/package.xml < rmw_implementation_only_fastrtsp_dependency.patch
+RUN patch -p1 -d src/fastrtps/ < fastrtps_cstdint.patch
+
+RUN apt upgrade && rosdep init && rosdep update && \
+		rosdep install --from-paths src --ignore-src -y --rosdistro humble --os=ubuntu:jammy --skip-keys "fastcdr rti-connext-dds-6.0.1 urdfdom_headers"
+
+RUN colcon build --merge-install

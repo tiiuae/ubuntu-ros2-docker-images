@@ -1,0 +1,29 @@
+repositories:
+    foonathan_memory_vendor:
+        type: git
+        url: https://github.com/eProsima/foonathan_memory_vendor.git
+        version: v1.2.0
+    fastcdr:
+        type: git
+        url: https://github.com/eProsima/Fast-CDR.git
+        version: v1.0.26
+    fastrtps:
+        type: git
+        url: https://github.com/eProsima/Fast-DDS.git
+        version: v2.10.1
+    ros2/rmw_fastrtps:
+        type: git
+        url: https://github.com/ros2/rmw_fastrtps.git
+        version: 6.2.3
+    ros2/rosidl_typesupport_fastrtps:
+        type: git
+        url: https://github.com/ros2/rosidl_typesupport_fastrtps.git
+        version: 2.2.0
+    px4-msgs:
+        type: git
+        url: https://github.com/tiiuae/PX4-msgs.git
+        version: 40b9a17b87b18023db1dd299ac1de838692853c1
+    fognav-msgs:
+        type: git
+        url: https://github.com/tiiuae/fognav_msgs.git
+        version: f7349f879e92bf08d7b545a71be7470647f6db3d
