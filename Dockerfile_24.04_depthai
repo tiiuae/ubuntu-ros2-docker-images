@@ -17,6 +17,7 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt install -y --no-
 		libopencv-dev \
 		libssl-dev \
 		zip \
+		git \
 	&& rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
