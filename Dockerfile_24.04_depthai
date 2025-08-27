@@ -27,6 +27,6 @@ WORKDIR /app
 RUN git clone --depth 1 https://github.com/luxonis/depthai-core.git depthai-core \
 		&& cd depthai-core \
 		&& git submodule update --init --recursive \
-		&& cmake -S . -B build \
+		&& cmake -S . -B build -D'BUILD_SHARED_LIBS=ON' \
 		&& cmake --build build --parallel 4
 
