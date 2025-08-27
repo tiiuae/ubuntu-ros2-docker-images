@@ -1,4 +1,4 @@
-name: build and publish
+name: build and publish ROS2
 on:
   push:
     branches: [main]

@@ -1,0 +1,33 @@
+FROM ubuntu:24.04 AS common
+
+RUN apt update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt install -y --no-install-recommends \
+		locales \
+		gnutls-bin \
+		curl \
+		software-properties-common \
+		pkg-config \
+		build-essential \
+		g++ \
+		gcc \
+		make \
+		cmake \
+		pkg-config \
+		golang-go \
+		libusb-1.0-0-dev \
+		libopencv-dev \
+		libssl-dev \
+		ninja-build \
+		autoconf \
+		libudev-dev \
+		libstdc++-12-dev \
+		zip \
+		git \
+	&& rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+RUN git clone --depth 1 https://github.com/luxonis/depthai-core.git depthai-core \
+		&& cd depthai-core \
+		&& git submodule update --init --recursive \
+		&& cmake -S . -B build -D'BUILD_SHARED_LIBS=ON' \
+		&& cmake --build build --target install --parallel 4
